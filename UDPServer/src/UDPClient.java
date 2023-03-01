@@ -1,8 +1,11 @@
 //Importiamo le classi necessarie per il funzionamento del programma
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class UDPClient {
 
@@ -12,6 +15,9 @@ public class UDPClient {
     private static final int BUFFER_SIZE = 1024; // 1024 byte dimensione del buffer utilizzato per ricevere e inviare i dati tramite pacchetti UDP.
 
     public static void main(String[] args) throws Exception { // indica che il metodo può avere eccezioni
+        try{
+            
+        
 
         // creo un array di byte di dimensione BUFFER_SIZE.
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -21,9 +27,15 @@ public class UDPClient {
         DatagramSocket clientSocket = new DatagramSocket();
 
         // Creazione del datagramma per inviare i dati al server
-        InetAddress serverAddress = InetAddress.getByName(SERVER_ADDRESS);
-        String requestData = "Ciao dal client!";
-        byte[] requestBytes = requestData.getBytes();
+        InetAddress serverAddress = InetAddress.getByName(SERVER_ADDRESS); //recupera l'indirizzo IP del server a cui inviare i dati
+        String requestData = "Ciao dal client!"; //dati da inviare
+        byte[] requestBytes = requestData.getBytes();//Questa stringa viene convertita in un array di byte tramite il metodo getBytes() della classe String
+        
+        //Infine, viene creato un nuovo DatagramPacket con : 
+        // - i dati da inviare (requestBytes)
+        // - la lunghezza dei dati (requestBytes.length)
+        // - l'indirizzo IP del server (serverAddress) 
+        // - la porta del server a cui inviare i dati (PORT).
         DatagramPacket sendPacket = new DatagramPacket(requestBytes, requestBytes.length, serverAddress, PORT);
 
         // Invio dei dati al server
@@ -41,6 +53,16 @@ public class UDPClient {
         
 
             clientSocket.close();
+            
+        }
+            
+          catch (UnknownHostException e) {
+            System.err.println("Errore DNS!");
+        } catch (SocketException e) {
+            System.err.println("Errore nel socket!");
+        } catch (IOException e) {
+            System.err.println("Errore di I/O!");
+        } 
 
 }
     
